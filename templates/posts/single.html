@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 ftco-animate">
+                <h2 class="mb-3">{{ post.title }}</h2>
+                <p><img src="{{ post.image.url }}" alt="" class="img-fluid"></p>
+                <p>{{ post.content }}</p>
+                <div class="tag-widget post-tag-container mb-5 mt-5">
+                    <div class="tagcloud">
+                        {% for tag in post.tag.all %}
+                            <a class="tag-cloud-link">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="about-author d-flex p-4 bg-light">
+                    <div class="bio mr-5">
+                        <img src="{{ post.author_image.url }}" alt="Image placeholder" class="img-fluid mb-4">
+                    </div>
+                    <div class="desc">
+                        <h3>{{ post.author_name }}</h3>
+                        <p>{{ post.author_comment }}</p>
+                    </div>
+                </div>
+                <div class="pt-5 mt-5" id="comments">
+                    <h3 class="mb-5">{{ post.comment_set.count }} Comments</h3>
+                    <ul class="comment-list">
+                        {% for comment in comments %}
+                            <li class="comment">
+                            {% if comment.avatar %}
+                                <div class="vcard bio">
+                                    <img src="{{ comment.avatar.url }}" alt="Image placeholder">
+                                </div>
+                            {% else %}
+                                <div class="vcard bio">
+                                    <img src="{% static 'images/user.png' %}" alt="Image placeholder">
+                                </div>
+                            {% endif %}
+                            <div class="comment-body">
+                                <h3>{{ comment.name }}</h3>
+                                <div class="meta">{{ comment.created_at }}</div>
+                                <p>{{ comment.message }}</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="comment-form-wrap pt-5">
+                        <h3 class="mb-5">Leave a comment</h3>
+                        <form method="post" class="p-5 bg-light" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Name *</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="form-group">
+                                <label for="image">Image</label>
+                                {{ form.avatar }}
+                            </div>
+                            <div class="form-group">
+                                <label for="website">Website</label>
+                                {{ form.website }}
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                {{ form.message }}
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Post Comment" class="btn py-3 px-4 btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 sidebar ftco-animate">
+                <div class="sidebar-box">
+                    <form method="get" action="/#blog-section" class="search-form">
+                        <div class="form-group">
+                            <span class="icon icon-search"></span>
+                            <input type="text" name="search" class="form-control" placeholder="Search...">
+                        </div>
+                    </form>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="heading-sidebar">Categories</h3>
+                    <ul class="categories">
+                        {% for category in categories %}
+                            <li><a href="/?cat={{ category }}#blog-section">{{ category }} <span>({{ category.post_set.count }})</span></a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="heading-sidebar">Recent Blog</h3>
+                    {% for last_3_post in last_3_posts %}
+                        <div class="block-21 mb-4 d-flex">
+                        <a class="blog-img mr-4" href="/posts/single/{{ last_3_post.slug }}/"
+                           style="background-image:url({{ last_3_post.image.url }})"></a>
+                        <div class="text">
+                            <h3 class="heading"><a href="/posts/single/{{ last_3_post.slug }}/">{{ last_3_post.title }}</a></h3>
+                            <div class="meta">
+                                <div><a><span class="icon-calendar"></span>{{ last_3_post.created_at }}</a></div>
+                                <div><a><span class="icon-person"></span>{{last_3_post.author }}</a></div>
+                                <div><a><span class="icon-chat"></span>{{ last_3_post.comment_set.count }}</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="heading-sidebar">Tag Cloud</h3>
+                    <div class="tagcloud">
+                        {% for tag in tags %}
+                            <a href="/?tag={{ tag }}#blog-section" class="tag-cloud-link">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="sidebar-box ftco-animate">
+                    <h3 class="heading-sidebar">Paragraph</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus
+                        voluptate quod mollitia delectus aut, sunt placeat nam vero culpa sapiente consectetur
+                        similique, inventore eos fugit cupiditate numquam!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
